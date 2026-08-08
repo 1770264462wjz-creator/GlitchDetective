@@ -7,6 +7,7 @@ import { SaveModule } from './modules/save/save.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { AdModule } from './modules/ad/ad.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     SaveModule,
     UserModule,
     AnalyticsModule,
+    AdModule,
   ],
   controllers: [HealthController],
 })
