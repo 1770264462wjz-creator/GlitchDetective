@@ -1,0 +1,9 @@
+:root {
+  font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #2b2b2b;
+  background-color: #f5f6f8;
+}
+
+body {
+  margin: 0;
+}

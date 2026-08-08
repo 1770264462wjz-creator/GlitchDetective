@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend build (NestJS)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: project/backend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  editor:
+    name: Editor build (Vue3)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project/editor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: project/editor/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  database:
+    name: Schema script verify (MySQL 8.0)
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: glitch_detective
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: 主副本执行建库脚本（幂等）
+        run: mysql -h 127.0.0.1 -u root -proot < docs/database/init-schema.sql
+      - name: 校验 16 张业务表
+        run: |
+          COUNT=$(mysql -h 127.0.0.1 -u root -proot -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'glitch_detective';")
+          echo "tables=$COUNT"
+          test "$COUNT" = "16"
