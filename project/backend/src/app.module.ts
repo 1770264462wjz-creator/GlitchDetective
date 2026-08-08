@@ -6,6 +6,7 @@ import { LevelModule } from './modules/level/level.module';
 import { SaveModule } from './modules/save/save.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './modules/user/user.module';
     LevelModule,
     SaveModule,
     UserModule,
+    AnalyticsModule,
   ],
   controllers: [HealthController],
 })
