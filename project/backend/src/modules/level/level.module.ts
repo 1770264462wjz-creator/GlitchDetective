@@ -10,5 +10,6 @@ import { MemoryLevelStore } from './stores/memory-level.store';
     { provide: LEVEL_STORE, useClass: MemoryLevelStore },
     LevelService,
   ],
+  exports: [LevelService],
 })
 export class LevelModule {}

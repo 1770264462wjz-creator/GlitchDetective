@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HealthController } from './health/health.controller';
 import { loadAppConfig } from './config/env.schema';
 import { LevelModule } from './modules/level/level.module';
+import { SaveModule } from './modules/save/save.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LevelModule } from './modules/level/level.module';
       validationOptions: { abortEarly: false },
     }),
     LevelModule,
+    SaveModule,
   ],
   controllers: [HealthController],
 })

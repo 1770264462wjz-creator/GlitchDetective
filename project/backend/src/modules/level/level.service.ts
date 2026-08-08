@@ -80,4 +80,9 @@ export class LevelService {
     }
     return toDetail(level);
   }
+
+  /** 关卡总数（存档模块推进 maxLevel 上限用） */
+  getTotalCount(): number {
+    return this.store.findAll().length;
+  }
 }
