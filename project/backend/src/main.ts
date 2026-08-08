@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,9 @@ async function bootstrap(): Promise<void> {
       transformOptions: { enableImplicitConversion: false },
     }),
   );
+
+  // 全局鉴权守卫：除 @Public() 外全部接口校验 token（docs/06 §4.3）
+  app.useGlobalGuards(app.get(JwtAuthGuard));
 
   // 全局异常过滤 + 响应包装：所有接口返回 { code, message, data }
   app.useGlobalFilters(new AllExceptionsFilter());

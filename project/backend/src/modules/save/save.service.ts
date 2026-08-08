@@ -69,9 +69,6 @@ function summarize(p: StoredUserProgress): ProgressSummary {
 
 @Injectable()
 export class SaveService {
-  /** 未登录占位用户（user 模块落地前由鉴权上下文替换，收起自 docs/08 M3 阶段约束） */
-  static readonly DEFAULT_USER_ID = '1';
-
   constructor(
     @Inject(SAVE_STORE) private readonly saveStore: SaveStore,
     private readonly levelService: LevelService,

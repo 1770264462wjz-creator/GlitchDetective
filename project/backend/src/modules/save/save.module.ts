@@ -16,5 +16,6 @@ import { MemorySaveStore } from './stores/memory-save.store';
     { provide: SAVE_STORE, useClass: MemorySaveStore },
     SaveService,
   ],
+  exports: [SaveService],
 })
 export class SaveModule {}
