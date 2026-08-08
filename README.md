@@ -55,7 +55,7 @@
 ```
 GlitchDetective/
 ├── README.md                  # 本文件：总览、端口、连接信息、文档索引
-├── docs/                      # 全部设计文档（本次交付）
+├── docs/                      # 全部设计文档
 │   ├── 00-项目概览与目录规范.md
 │   ├── 01-总体架构设计.md
 │   ├── 02-技术选型说明.md
@@ -70,16 +70,17 @@ GlitchDetective/
 │   ├── 11-关卡编辑器与内容管线.md
 │   ├── 12-抖音平台集成与传播设计.md
 │   ├── 13-开发路线图.md
+│   ├── 14-待处理与风险清单.md
 │   └── database/
 │       ├── README.md              # 建库脚本说明
 │       └── init-schema.sql        # 建库建表脚本（MySQL 8.0）
 ├── prototype/                 # 产品原型（后续阶段，高保真 HTML）
 ├── project/
-│   ├── frontend/              # Cocos Creator 游戏源码（后续阶段，端口 1024）
-│   ├── editor/                # 关卡编辑器 Vue3 源码（后续阶段，端口 1025）
-│   └── backend/               # NestJS 后端源码（后续阶段，端口 2010）
-├── database/                  # 数据库脚本副本（后续阶段同步）
-└── utils/                     # 项目工具包（关卡校验器、Schema 生成器等）
+│   ├── frontend/              # Cocos Creator 游戏源码（端口 1024，解释器已就位）
+│   ├── editor/                # 关卡编辑器 Vue3 源码（端口 1025，v1 可运行）
+│   └── backend/               # NestJS 后端源码（端口 2010，一期 6 模块完成）
+├── database/                  # 数据库脚本副本
+└── utils/                     # 项目工具包（关卡校验器等）
 ```
 
 ## 五、文档索引
@@ -125,14 +126,29 @@ mysql -u root -p < docs/database/init-schema.sql
 # 2. 启动后端（端口 2010）
 cd project/backend && npm install && npm run start:dev
 
-# 3. 启动游戏前端（端口 1024）
-cd project/frontend && npm install && npm run dev
-
-# 4. 启动关卡编辑器（端口 1025，后续阶段）
+# 3. 启动关卡编辑器（端口 1025，Vite 已代理 /api/v1 → 2010）
 cd project/editor && npm install && npm run dev
+
+# 4. 游戏前端（端口 1024）：Cocos Creator 3.8 打开 project/frontend 工程
+#    工程创建手册见 project/frontend/README.md（R3 阻塞项）
 ```
 
-> 本阶段仅交付文档与建库脚本；前后端与原型源码将在后续阶段创建。
+### 接口一览（docs/08）
+
+| 方法 | 路径 | 说明 | 鉴权 |
+| --- | --- | --- | --- |
+| POST | `/api/v1/auth/login` | 登录（code 换 openid，本地 Mock） | 匿名 |
+| GET | `/api/v1/user/profile` | 用户资料 + 统计 | 登录 |
+| GET | `/api/v1/levels` | 关卡列表（仅已发布） | 登录 |
+| GET | `/api/v1/levels/:id` | 关卡详情（含 content） | 登录 |
+| POST | `/api/v1/progress` | 上报进度 | 登录 |
+| GET | `/api/v1/progress` | 拉取存档 | 登录 |
+| POST | `/api/v1/ad/start` / `verify` / `reward-claim` | 广告会话/验证/补偿领取 | 登录 |
+| POST | `/api/v1/events` | 埋点批量上报（含匿名白名单） | 部分匿名 |
+| GET/POST/PUT/DELETE | `/api/v1/admin/levels...` | 关卡管理（草稿/审核/发布/下线） | 登录 |
+
+> 本地 Mock 登录：任意 `code` + `platform=douyin` 即可换取 token（`MockCodeExchanger`）。
+> 广告验证 Mock：`platform_order_id` 以 `dyad_` 开头视为合法（`MockAdVerifier`）。
 
 ## 八、验收标准（本阶段）
 

@@ -7,6 +7,13 @@ export default defineConfig({
         host: true,
         port: 1025,
         strictPort: true,
+        // 开发代理：/api/v1 → 后端 2010（docs/08 接口前缀）
+        proxy: {
+            '/api/v1': {
+                target: 'http://localhost:2010',
+                changeOrigin: true,
+            },
+        },
     },
     preview: {
         port: 1025,
